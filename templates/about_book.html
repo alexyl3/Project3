@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>О книге</h1>
+<table width="100%" cellspacing="0" cellpadding="10">
+        <tr>
+    <td><h3 class="text">"{{ book.title }}" {{ book.author }}</h3></td>
+    <td align="right"><p class="text-secondary">{{ names[book.owner][0] }} {{ names[book.owner][1] }}</p></td>
+        </tr>
+        <tr>
+    <td><table>
+        <tr><td class="ordinary" align="left"><h6 class="text">Год издания: {{ book.year }}</h6></td></tr>
+        <tr><td class="ordinary" align="left"><h6 class="text">Состояние: {{ book.condition.lower() }}</h6></td></tr>
+        <tr><td class="ordinary" align="left"><h6 class="text">Цена: {{ book.price }}₽</h6></td></tr>
+        <tr><td class="ordinary" align="left"><h6 class="text">Номер владельца: +{{ owner.telephone }}₽</h6></td></tr>
+        <tr><td class="ordinary" align="left"><h6 class="text">Адрес владельца: {{ owner.address }}₽</h6></td></tr>
+    </table></td>
+            {% if is_owner %}
+            <form action="" method="post">
+<td align="right"><p>{{ form.submit( class="btn btn-primary") }}</p></td>
+            </form>
+{% endif %}
+        </tr>
+    </table>
+{% endblock %}

@@ -1,0 +1,27 @@
+.btn-primary, .btn-primary:active, .btn-primary:hover, .btn-primary:focus, .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active {
+background-color: DarkGoldenRod;
+color: white;
+border-color: DarkGoldenRod;
+
+}
+
+.btn-success, .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active {
+background-color: CadetBlue;
+color: white;
+border-color: CadetBlue;
+
+}
+
+btn-success:focus, .btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active {
+background-color: #326667;
+color: white;
+border-color: #326667;
+
+}
+
+btn-primary:focus, .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active {
+background-color: #94721E;
+color: white;
+border-color: #94721E;
+
+}

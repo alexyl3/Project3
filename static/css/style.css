@@ -1,0 +1,39 @@
+h4 {
+    color: CadetBlue;
+    padding: 20px;
+}
+p {
+    font-size: 14pt;
+}
+#table1 {
+  border-collapse: separate;
+  border-spacing: 10px;
+  margin-left: 0px
+}
+.navbar {
+background-color: #F6EDC1;
+}
+.text-light {
+background-color: CadetBlue;
+}
+.navbar-brand {
+color: #4A8082;
+}
+.navbar-brand:hover {
+color: CadetBlue;
+}
+.navbar-ind {
+color: #4A8082;
+}
+.navbar-ind:hover {
+color: #4A8082;
+text-decoration: none;
+}
+.container-sm {
+background-color: #F6EDC1;
+}
+.text {
+color: #4A8082;
+}
+.inform {
+background-color: #F6EDC1}

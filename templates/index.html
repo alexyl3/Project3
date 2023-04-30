@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<meta charset="UTF-8">
+
+<h2 align="center">О нас</h2>
+<table width="100%" cellspacing="0" cellpadding="10">
+   <tr>
+    <td class="leftcol"><img src='static/img/books.jpg' alt="картинка книги" width="368" height="400"></td>
+    <td valign="top">
+        <table width="100%" cellspacing="10" cellpadding="10">
+   <tr valign="top"><td><p>Книжный дворик - площадка для обмена и покупки книг.
+       Здесь пользователи могут найти редкие издания, а также пообщаться с такими же любителями литературы.
+       Книги расширяют кругозор человека, обогащают его внутренний мир, делают умнее. А ещё важно читать книги потому,
+       что это увеличивает словарный запас человека, вырабатывает чёткое и ясное мышление. Читающий человек грамотнее говорит.</p></td>
+   </tr>
+   <tr><td>{% if not current_user.is_authenticated %}
+       <p class="text-light"> Зарегистрируйтесь или войдите, чтобы просматривать объявления. </p>
+       {% else %}
+       <table width="100%" cellspacing="1" cellpadding="5" >
+   <tr>
+       <td><a class="btn btn-primary " href="/books">Просматривать объявления</a></td>
+       <td><a class="btn btn-success " href="/add_book">Cоздать объявление</a></td>
+   </tr>
+  </table>
+       {% endif %}</td>
+   </tr>
+  </table>
+   </tr>
+  </table>
+{% endblock %}

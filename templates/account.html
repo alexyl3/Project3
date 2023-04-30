@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Ваш аккаунт</h1>
+<table width="100%" cellspacing="0" cellpadding="5" id="table1" align="right">
+    <tr>
+        <td>Фамилия</td>
+        <td class="inform">{{ current_user.surname }}</td>
+   </tr>
+    <tr>
+        <td>Имя</td>
+        <td class="inform">{{ current_user.name }}</td>
+   </tr>
+    <tr>
+        <td>Адрес</td>
+        <td class="inform">{{ current_user.address }}</td>
+   </tr>
+    <tr>
+        <td>Телефон</td>
+        <td class="inform">{{ current_user.telephone }}</td>
+   </tr>
+  </table>
+<p></p>
+<a class="btn btn-success " href="/edit">Изменить данные</a>
+<a class="btn btn-primary " href="/logout">Выйти</a>
+<p></p>
+<h1>Ваши объявления</h1>
+<p></p>
+{% if books == [] %}
+<p class="text-light">Нет активных объявлений</p>
+{% endif %}
+{% for book in books %}
+<div class="container-sm">
+    <table width="100%" cellspacing="0" cellpadding="10">
+        <tr>
+    <td><h3 class="text">"{{ book.title }}" {{ book.author }}</h3></td>
+    <td align="right"><p class="text-secondary">{{ names[book.owner][0] }} {{ names[book.owner][1] }}</p></td>
+        </tr>
+
+        <tr>
+    <td><table>
+        <tr><td class="ordinary" align="left"><h6 class="text">Год издания: {{ book.year }}</h6></td></tr>
+        <tr><td class="ordinary" align="left"><h6 class="text">Состояние: {{ book.condition.lower() }}</h6></td></tr>
+        <tr><td class="ordinary" align="left"><h6 class="text">Цена: {{ book.price }}₽</h6></td></tr>
+    </table></td>
+    <td align="right"><a class="btn btn-success" href="/about_book/aa">Подробнее</a></td>
+        </tr>
+    </table>
+</div>
+<br>
+{% endfor %}
+{% endblock %}
