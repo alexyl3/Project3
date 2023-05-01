@@ -1,9 +1,10 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from sqlalchemy import update
 import requests
 from numpy import sin, cos, arccos, pi, round
-
+import os
+from PIL import Image
 from data import db_session
 from data.add_book import AddBookForm
 from data.login_form import LoginForm
@@ -54,6 +55,18 @@ def radius_adr(address1, address2):
     lon1, lat1 = [float(x) for x in json_response1["Point"]["pos"].split(" ")]
     lon2, lat2 = [float(x) for x in json_response2["Point"]["pos"].split(" ")]
     return getDistanceBetweenPointsNew(lat1, lon1, lat2, lon2)
+
+
+def file_is_image(file):
+    if file.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
+        img = Image.open(file)
+        print(img)
+        try:
+            img.verify()
+            return True
+        except Exception:
+            return False
+    return False
 
 
 @login_manager.user_loader
@@ -150,7 +163,7 @@ def edit():
 @app.route("/account")
 def account():
     db_sess = db_session.create_session()
-    books = db_sess.query(Books).filter(Books.owner == current_user.id).all()
+    books = db_sess.query(Books).filter(Books.owner == current_user.id, Books.is_sold == 0).all()
     users = db_sess.query(User).all()
     names = {name.id: (name.surname, name.name) for name in users}
     temple = render_template("account.html", books=books, title='Аккаунт', names=names)
@@ -169,16 +182,21 @@ def about_book(book_id):
     is_owner = book.owner == current_user.id
     owner = db_sess.query(User).filter(User.id == book.owner).first()
     form_del = DeleteBookForm()
+    url1 = f'/static/img/uploads/photo_{book_id}_1.png'
+    url2 = f'/static/img/uploads/photo_{book_id}_2.png'
     if is_owner:
         if form_del.submit.data:
             db_sess.execute(update(Books).where(Books.id == book_id).values(is_sold=1))
             db_sess.commit()
             return redirect('/success')
-        return render_template("about_book.html", book=book, title='О книге',
-                               is_owner=is_owner, form=form_del, names=names, owner=owner)
+        template = render_template("about_book.html", book=book, title='О книге',
+                                   is_owner=is_owner, form=form_del, names=names, owner=owner)
     else:
-        return render_template("about_book.html", book=book, title='О книге',
-                               is_owner=is_owner, names=names, owner=owner)
+        template = render_template("about_book.html", book=book, title='О книге',
+                                   is_owner=is_owner, names=names, owner=owner)
+    template = template.replace('<p>Тут фото</p>', f'<img src="{url1}" alt="фото книги" height="400"> <img src="{url2}"'
+                                                   f' alt="фото книги" height="400">')
+    return template
 
 
 @app.route("/success")
@@ -191,19 +209,30 @@ def addjob():
     add_form = AddBookForm()
     if add_form.validate_on_submit():
         db_sess = db_session.create_session()
-        book = Books(
-            title=add_form.title.data,
-            author=add_form.author.data,
-            owner=current_user.id,
-            year=add_form.year.data,
-            price=add_form.price.data,
-            condition=add_form.condition.data,
-            is_sold=False
-        )
-        db_sess.add(book)
-        db_sess.commit()
-        return redirect('/success')
-    return render_template('addbook.html', title='Добавление книги', form=add_form)
+        f1 = request.files['file1']
+        f2 = request.files['file2']
+        if file_is_image(f1) and file_is_image(f2):
+            book = Books(
+                title=add_form.title.data,
+                author=add_form.author.data,
+                owner=current_user.id,
+                year=add_form.year.data,
+                price=add_form.price.data,
+                condition=add_form.condition.data,
+                is_sold=False
+            )
+            db_sess.add(book)
+            db_sess.commit()
+            book_id = len(db_sess.query(Books).all())
+            dr = os.getcwd()
+            os.chdir(os.path.join(dr, 'static/img/uploads'))
+            f1.save(f'photo_{book_id}_1.png')
+            f2.save(f'photo_{book_id}_2.png')
+            os.chdir(dr)
+            return redirect('/success')
+        else:
+            return render_template('addbook.html', title='Добавление книги', form=add_form, photo_problem=True)
+    return render_template('addbook.html', title='Добавление книги', form=add_form, photo_problem=False)
 
 
 def main():

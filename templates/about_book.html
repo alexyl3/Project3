@@ -12,8 +12,8 @@
         <tr><td class="ordinary" align="left"><h6 class="text">Год издания: {{ book.year }}</h6></td></tr>
         <tr><td class="ordinary" align="left"><h6 class="text">Состояние: {{ book.condition.lower() }}</h6></td></tr>
         <tr><td class="ordinary" align="left"><h6 class="text">Цена: {{ book.price }}₽</h6></td></tr>
-        <tr><td class="ordinary" align="left"><h6 class="text">Номер владельца: +{{ owner.telephone }}₽</h6></td></tr>
-        <tr><td class="ordinary" align="left"><h6 class="text">Адрес владельца: {{ owner.address }}₽</h6></td></tr>
+        <tr><td class="ordinary" align="left"><h6 class="text">Номер владельца: +{{ owner.telephone }}</h6></td></tr>
+        <tr><td class="ordinary" align="left"><h6 class="text">Адрес владельца: {{ owner.address }}</h6></td></tr>
     </table></td>
             {% if is_owner %}
             <form action="" method="post">
@@ -22,4 +22,5 @@
 {% endif %}
         </tr>
     </table>
+<p>Тут фото</p>
 {% endblock %}
