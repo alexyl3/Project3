@@ -5,6 +5,7 @@ import requests
 from numpy import sin, cos, arccos, pi, round
 import os
 from PIL import Image
+
 from data import db_session
 from data.add_book import AddBookForm
 from data.login_form import LoginForm
@@ -33,6 +34,7 @@ def deg2rad(degrees):
 
 
 def getDistanceBetweenPointsNew(latitude1, longitude1, latitude2, longitude2):
+
     theta = longitude1 - longitude2
     distance = 60 * 1.1515 * rad2deg(
         arccos(
@@ -50,6 +52,7 @@ def radius_adr(address1, address2):
     geocoder_request = \
         f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={address2}&format=json"
     response2 = requests.get(geocoder_request)
+
     json_response1 = response1.json()["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
     json_response2 = response2.json()["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
     lon1, lat1 = [float(x) for x in json_response1["Point"]["pos"].split(" ")]
@@ -86,6 +89,7 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
+
         return render_template('login.html', message="Неверный пароль", form=form)
     return render_template('login.html', title='Вход', form=form)
 
@@ -116,6 +120,19 @@ def books():
                     is_in_words = True
             if not is_in_words:
                 books_to_delete.append(book)
+    # Ноябрьским днём, когда защищены
+    # от ветра только голые деревья,
+    # а всё необнажённое дрожит,
+    # я медленно бреду вдоль колоннады
+    # дворца, чьи стекла чествуют закат
+    # и голубей, слетевшихся гурьбою
+    # к заполненным окурками весам
+    # слепой богини. Старые часы
+    # показывают правильное время.
+    # Вода бурлит, и облака над парком
+    # не знают толком что им предпринять,
+    # и пропускают по ошибке солнце.
+    # И. А. Бродский - Ноябрьским днём
 
     if form_rad.radius.data:
         for book in books:
@@ -123,11 +140,15 @@ def books():
                 books_to_delete.append(book)
 
     books_to_delete = list(set(books_to_delete))
+
+
     for book in books_to_delete:
         books.pop(books.index(book))
     names = {name.id: (name.surname, name.name) for name in users}
     temple = render_template("booklist.html", books=books, names=names, title='Объявления', form=form_rad)
     t = temple.split('/about_book/aa')
+
+    # добавляем ссысли на страницы о книгах
     for i in range(len(t) - 1):
         t.insert(i * 2 + 1, f"/about_book/{books[i].id}")
     return ''.join(t)
@@ -144,6 +165,7 @@ def logout():
 def reqister():
     form = RegisterForm()
     if form.validate_on_submit():
+
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация', form=form,
                                    message="Пароли не совпадают")
@@ -204,6 +226,7 @@ def about_book(book_id):
     form_del = DeleteBookForm()
     url1 = f'/static/img/uploads/photo_{book_id}_1.png'
     url2 = f'/static/img/uploads/photo_{book_id}_2.png'
+
     if is_owner:
         if form_del.submit.data:
             db_sess.execute(update(Books).where(Books.id == book_id).values(is_sold=1))
@@ -214,6 +237,7 @@ def about_book(book_id):
     else:
         template = render_template("about_book.html", book=book, title='О книге',
                                    is_owner=is_owner, names=names, owner=owner)
+    # добавляем ссылки на изображения книг
     template = template.replace('<p>Тут фото</p>', f'<img src="{url1}" alt="фото книги" height="400"> <img src="{url2}"'
                                                    f' alt="фото книги" height="400">')
     return template
@@ -228,6 +252,7 @@ def success():
 def addjob():
     add_form = AddBookForm()
     if add_form.validate_on_submit():
+
         db_sess = db_session.create_session()
         f1 = request.files['file'][0]
         f2 = request.files['file'][1]
@@ -241,6 +266,7 @@ def addjob():
                 condition=add_form.condition.data,
                 is_sold=False
             )
+
             db_sess.add(book)
             db_sess.commit()
             book_id = len(db_sess.query(Books).all())
@@ -249,6 +275,7 @@ def addjob():
             f1.save(f'photo_{book_id}_1.png')
             f2.save(f'photo_{book_id}_2.png')
             os.chdir(dr)
+
             return redirect('/success')
         else:
             return render_template('addbook.html', title='Добавление книги', form=add_form, photo_problem=True)
