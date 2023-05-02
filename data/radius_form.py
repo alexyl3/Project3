@@ -4,5 +4,5 @@ from wtforms.validators import DataRequired
 
 
 class RadiusForm(FlaskForm):
-    radius = IntegerField('Искать книги от продавцов в радиусе до:', validators=[DataRequired()])
+    radius = IntegerField('Искать книги от продавцов в радиусе до:', validators=[])
     submit = SubmitField('Искать')

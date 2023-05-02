@@ -209,8 +209,8 @@ def addjob():
     add_form = AddBookForm()
     if add_form.validate_on_submit():
         db_sess = db_session.create_session()
-        f1 = request.files['file1']
-        f2 = request.files['file2']
+        f1 = request.files['file'][0]
+        f2 = request.files['file'][1]
         if file_is_image(f1) and file_is_image(f2):
             book = Books(
                 title=add_form.title.data,
