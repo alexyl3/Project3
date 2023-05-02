@@ -100,11 +100,31 @@ def books():
     form_rad = RadiusForm()
     db_sess = db_session.create_session()
     users = db_sess.query(User).all()
-    books = db_sess.query(Books).filter(Books.is_sold == 0).all()
+    if form_rad.not_show.data:
+        books = db_sess.query(Books).filter(Books.is_sold == 0, Books.owner != current_user.id).all()
+    else:
+        books = db_sess.query(Books).filter(Books.is_sold == 0).all()
+    books_to_delete = []
+    words = None
+    if form_rad.words.data:
+        words = [x.lower() for x in form_rad.words.data.split()]
+    if words:
+        for book in books:
+            is_in_words = False
+            for word in words:
+                if word in book.title.lower() or word in book.author.lower():
+                    is_in_words = True
+            if not is_in_words:
+                books_to_delete.append(book)
+
     if form_rad.radius.data:
         for book in books:
             if radius_adr(users[book.owner - 1].address, current_user.address) > int(form_rad.radius.data):
-                books.pop(books.index(book))
+                books_to_delete.append(book)
+
+    books_to_delete = list(set(books_to_delete))
+    for book in books_to_delete:
+        books.pop(books.index(book))
     names = {name.id: (name.surname, name.name) for name in users}
     temple = render_template("booklist.html", books=books, names=names, title='Объявления', form=form_rad)
     t = temple.split('/about_book/aa')

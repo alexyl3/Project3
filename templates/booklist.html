@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <h2 align="center" >Объявления</h2>
 <form action="" method="post">
+    <p>{{ form.words.label }}<br>
+            {{ form.words(class="form-control") }}
+            {% for error in form.words.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
     <p>{{ form.radius.label }}<br>
             {{ form.radius(class="form-control") }}
             {% for error in form.radius.errors %}
@@ -11,6 +18,7 @@
                     {{ error }}
                 </div>
             {% endfor %}
+    <p>{{ form.not_show() }} {{ form.not_show.label }}</p>
 <p>{{ form.submit( class="btn btn-primary") }}</p>
     {% if message %}
         <div class="alert alert-danger" role="alert">
